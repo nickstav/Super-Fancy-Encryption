@@ -1,6 +1,6 @@
 import { get } from 'svelte/store';
 import { appStatus } from './store.js';
-import { sendUserInfo } from './fetch.js';
+import { sendUserInfo, sendEncryptedMessage } from './fetch.js';
 
 function quitApp() {
 	let appMode = get(appStatus).appMode;
@@ -25,7 +25,6 @@ async function checkSubmission(firstPasswordEntry, secondPasswordEntry, message)
 	if (checkPassword(firstPasswordEntry, secondPasswordEntry)) {
 		appStatus.saveUserInfo(firstPasswordEntry, message);
 		let encryptedMessage = await sendUserInfo(firstPasswordEntry, message);
-		console.log(encryptedMessage);
 		appStatus.showEncryptedMessage(encryptedMessage);
 	}
 }
@@ -40,4 +39,13 @@ function checkPassword(firstEntry, secondEntry) {
 	}
 }
 
-export { quitApp, startEncryption, startDecode, checkSubmission }
+async function sendEncodedMessage(password, message) {
+	if (password.length > 3) {
+		let decodedMessage = await sendEncryptedMessage(password, message);
+		appStatus.showDecodedMessage(decodedMessage);
+	} else {
+		alert('Please enter a password of length 4-12 characters')
+	}
+}
+
+export { quitApp, startEncryption, startDecode, checkSubmission, sendEncodedMessage }

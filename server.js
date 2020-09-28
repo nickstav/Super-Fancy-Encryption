@@ -16,6 +16,8 @@ app.listen(port, () => console.log(`Server running at http://localhost:${port}`)
 
 app.post('/userInfo', encodeMessage);
 
+app.post('/encryptedMessage', decodeMessage);
+
 async function encodeMessage(req, res) {
     try {
         const userInfo = req.body;
@@ -32,4 +34,22 @@ async function encodeMessage(req, res) {
       let encryptedMessage = 'I have encrypted "' + message + '"!';
       console.log('Encrypted Message: ' + encryptedMessage);
       return encryptedMessage;
+  }
+
+  async function decodeMessage(req, res) {
+    try {
+        const userInfo = req.body;
+        console.log('Encoded Message: ' + userInfo.encodedMessage);
+        let message = runDecoding(userInfo.password, userInfo.encodedMessage);
+        res.send(message);
+    } catch (error) {
+        console.log(error);
+    };
+  }
+
+  function runDecoding(password, message) {
+    console.log('password: ' + password);
+    let decodedMessage = 'I have decoded "' + message + '"!';
+    console.log('Decoded Message: ' + decodedMessage);
+    return decodedMessage;
   }

@@ -54,10 +54,11 @@ function setUpStore() {
 		});
 	}
 
-	function showDecodedMessage() {
+	function showDecodedMessage(receivedMessage) {
 		update(status => {
 			return {
 				...status,
+				decodedMessage: receivedMessage,
 				appMode: 'decodeResult'
 			};
 		});
