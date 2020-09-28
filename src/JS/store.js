@@ -34,20 +34,21 @@ function setUpStore() {
 		});
 	}
 
-	function saveUserInfo(enteredMessage, password) {
+	function saveUserInfo(userPassword, enteredMessage) {
 		update(status => {
 		  return {
 			...status,
-			password: password,
+			password: userPassword,
 			message: enteredMessage
 		  };
 		});
 	  }
 
-	function showEncryptedMessage() {
+	function showEncryptedMessage(receivedMessage) {
 		update(status => {
 			return {
 				...status,
+				encryptedMessage: receivedMessage,
 				appMode: 'encryptionResult'
 			};
 		});
