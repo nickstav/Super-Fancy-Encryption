@@ -2,6 +2,9 @@ const { spawn } = require("child_process");
 
 let password = "MattIsABum";
 let message = "I'm Woody. Howdy howdy howdy.";
+let receivedInfo = [];
+let encodedMessage;
+
 
 // spawn new child process to call the python script
 const python = spawn('python', ['test.py', password, message]);
@@ -16,11 +19,11 @@ python.on('close', confirmClosed);
 
 function collectInfo(data) {
     console.log('Piping data from Python script ...');
-    let receivedInfo = []
     receivedInfo.push(data);
-    console.log(JSON.parse(receivedInfo));
 }
 
 function confirmClosed(code) {
+    let result = JSON.parse(receivedInfo);
+    console.log(result);
     console.log(`Child process closed with code ${code}`);
 }
