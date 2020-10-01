@@ -9,6 +9,7 @@ function runDecoding() {
     const python = spawn('python', ['decodeTest.py', password, message.toString()]);
     python.stdout.on('data', (decodeMessage));
     python.on('close', confirmClosed);
+    python.stderr.on('data', handleError);
 }
 
 function decodeMessage(data) {
@@ -20,5 +21,17 @@ function decodeMessage(data) {
 }
 
 function confirmClosed(code) {
-    console.log(`Child process closed with code ${code}`);
+    if (code === 0) {
+        console.log(`Child process closed with code ${code}`);
+    } else {
+        console.log('Error: Process could not be completed');
+    }
 }
+
+function handleError(data) {
+    console.log(uint8arrayToString(data));
+}
+
+function uint8arrayToString(data) {
+    return String.fromCharCode.apply(null, data);
+};
