@@ -17,8 +17,6 @@ def decodeMessage(array):
     #decode the string
     decodedMessage = SFE.decodeMessage(password, encodedMessage)
 
-    print(10 * (1/0))
-
     return decodedMessage
 
 
