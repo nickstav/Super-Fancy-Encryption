@@ -6,7 +6,7 @@ let message = [194, 165, 194, 175, 195, 130, 93, 195, 152, 194, 178, 195, 158, 1
 runDecoding();
 
 function runDecoding() {
-    const python = spawn('python3', ['./decodeTest.py', password, message.toString()]);
+    const python = spawn('python3', ['../python/decode.py', password, message.toString()]);
     python.stdout.on('data', (decodeMessage));
     python.on('close', confirmClosed);
     python.stderr.on('data', handleError);

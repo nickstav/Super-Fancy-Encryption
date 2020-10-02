@@ -9,11 +9,13 @@ runEncryption();
 
 function runEncryption() {
     // spawn new child process to call the python script
-    const python = spawn('python', ['test.py', password, message]);
+    const python = spawn('python3', ['../python/encode.py', password, message]);
     // collect data from script
     python.stdout.on('data', collectInfo);
-    //The 'close' event is emitted when the stdio streams of a child process have been closed. 
+    // the 'close' event is emitted when the stdio streams of a child process have been closed. 
     python.on('close', confirmClosed);
+    // catch errors
+    python.stderr.on('data', handleError);
 }
 
 function collectInfo(data) {
@@ -21,9 +23,17 @@ function collectInfo(data) {
     let receivedInfo = [];
     receivedInfo.push(data);
     result = JSON.parse(receivedInfo);
-    console.log(result.encodedMessageAsUInt8);
+    console.log(result);
 }
 
 function confirmClosed(code) {
     console.log(`Child process closed with code ${code}`);
 }
+
+function handleError(data) {
+    console.log(uint8arrayToString(data));
+}
+
+function uint8arrayToString(data) {
+    return String.fromCharCode.apply(null, data);
+};

@@ -1,6 +1,7 @@
 import { get } from 'svelte/store';
 import { appStatus } from './store.js';
 import { sendUserInfo, sendEncryptedMessage } from './fetch.js';
+import { displayEncodedMessage } from './convert.js';
 
 function quitApp() {
 	let appMode = get(appStatus).appMode;
@@ -42,7 +43,11 @@ function checkPassword(firstEntry, secondEntry) {
 async function sendEncodedMessage(password, message) {
 	if (password.length > 3) {
 		let decodedMessage = await sendEncryptedMessage(password, message);
-		appStatus.showDecodedMessage(decodedMessage);
+		if (decodedMessage) {
+			appStatus.showDecodedMessage(decodedMessage);
+		} else {
+			alert('Error: Password does not match');
+		}
 	} else {
 		alert('Please enter a password of length 4-12 characters')
 	}

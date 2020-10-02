@@ -26,6 +26,3 @@ data = {
 dataJSON = json.dumps(data)
 
 print(dataJSON)
-
-
-
