@@ -12,7 +12,7 @@ def decodeMessage(array):
     
     #convert the array back into bytes and then into the original string
     messageAsBytes = bytes(array)
-    encodedMessage = str(messageAsBytes, 'utf-8')
+    encodedMessage = str(messageAsBytes, encoding='utf-8')
 
     #decode the string
     decodedMessage = SFE.decodeMessage(password, encodedMessage)
