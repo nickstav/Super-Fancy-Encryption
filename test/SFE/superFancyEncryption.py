@@ -1,4 +1,3 @@
-# ¯\_(ツ)_/¯
 L = len
 R = range
 O = ord
