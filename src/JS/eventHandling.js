@@ -25,7 +25,8 @@ function startDecode() {
 async function checkSubmission(firstPasswordEntry, secondPasswordEntry, message) {
 	if (checkPassword(firstPasswordEntry, secondPasswordEntry)) {
 		appStatus.saveUserInfo(firstPasswordEntry, message);
-		let encryptedMessage = await sendUserInfo(firstPasswordEntry, message);
+		let recievedArray = await sendUserInfo(firstPasswordEntry, message);
+		let encryptedMessage = displayEncodedMessage(recievedArray);
 		appStatus.showEncryptedMessage(encryptedMessage);
 	}
 }

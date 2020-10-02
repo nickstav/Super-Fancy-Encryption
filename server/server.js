@@ -1,5 +1,6 @@
 // declare a variable to store the password on the server
 let password = 'nick';
+let testMessage = [194, 165, 194, 175, 195, 130, 93, 195, 152, 194, 178, 195, 158, 195, 171, 194, 157, 194, 150, 194, 149, 194, 158, 195, 157, 195, 141, 194, 179, 195, 149, 194, 168, 194, 189, 194, 172, 195, 184, 194, 167, 195, 168, 194, 167, 194, 140, 195, 151, 195, 172, 194, 186, 195, 167, 194, 132];
 
 /* ----------------------Get required npm packages------------------------------*/
 
@@ -24,7 +25,7 @@ app.post('/encryptedMessage', decodeMessage);
 async function encodeMessage(req, res) {
     try {
         const userInfo = req.body;
-        console.log('User Message received:' + userInfo.message);
+        console.log('User Message received: ' + userInfo.message);
 
         password = userInfo.password;
         console.log('User password saved');
@@ -40,7 +41,7 @@ async function encodeMessage(req, res) {
 function runEncryption(message) {
     let encryptedMessage = 'I have encrypted "' + message + '"!';
     console.log('Encrypted Message: ' + encryptedMessage);
-    return encryptedMessage;
+    return testMessage;
 }
 
 async function decodeMessage(req, res) {
