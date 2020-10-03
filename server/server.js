@@ -19,10 +19,6 @@ app.listen(port, () => console.log(`Server running at http://localhost:${port}`)
 
 /* --------------------Interaction with the front end---------------------------*/
 
-
-let thing = encode.runEncryption('nick', 'Hey Diddly Dee! An Actors life for me!');
-console.log(thing);
-
 app.post('/userInfo', encodeMessage);
 
 app.post('/encryptedMessage', decodeMessage);
@@ -35,7 +31,7 @@ async function encodeMessage(req, res) {
         password = userInfo.password;
         console.log('User password saved');
 
-        let message = runDaEncryption(userInfo.message);
+        let message = await runEncryption(userInfo.message);
         res.send(message);
         console.log('Encrypted message sent');
     } catch (error) {
@@ -59,10 +55,9 @@ async function decodeMessage(req, res) {
     };
 }
 
-function runDaEncryption(message) {
-    let encryptedMessage = 'I have encrypted "' + message + '"!';
-    console.log('Encrypted Message: ' + encryptedMessage);
-    return testMessage;
+async function runEncryption(message) {
+    let encryptionResult = await encode.runEncryption(message);
+    return encryptionResult.encodedMessageAsUInt8;
 }
 
 function checkPassword(userPassword) {
