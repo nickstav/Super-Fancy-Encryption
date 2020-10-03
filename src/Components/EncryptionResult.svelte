@@ -1,4 +1,5 @@
 <script>
+    import FinishButton from './FinishButton.svelte';
     import { appStatus } from '../JS/store.js';
 </script>
 
@@ -9,4 +10,7 @@
     {:else}
         <p>Encrypting message...</p>
     {/if}  
+</div>
+<div id="returnButton">
+    <FinishButton/>
 </div>
