@@ -32,7 +32,7 @@ async function encodeMessage(req, res) {
         password = userInfo.password;
         console.log('User password saved');
 
-        let message = await runEncryption(userInfo.password, userInfo.message);
+        let message = await runPythonEncoding(userInfo.password, userInfo.message);
         res.send(message);
         console.log('Encrypted message sent');
     } catch (error) {
@@ -46,7 +46,7 @@ async function decodeMessage(req, res) {
         console.log('Received user info');
 
         if (checkPassword(userInfo.password)) {
-            let decodeResult = await decodeMessage(userInfo.password, userInfo.messageAsArray);
+            let decodeResult = await runPythonDecoding(userInfo.password, userInfo.messageAsArray);
             res.send(decodeResult);
         } else {
             sendPasswordError(res);
@@ -56,7 +56,7 @@ async function decodeMessage(req, res) {
     };
 }
 
-async function runEncryption(password, message) {
+async function runPythonEncoding(password, message) {
     let encryptionResult = await encode.runEncryption(password, message);
     return encryptionResult.encodedMessageAsUInt8;
 }
@@ -75,8 +75,7 @@ function sendPasswordError(res) {
     res.send(undefined);
 }
 
-
-async function decodeMessage(password, array) {
+async function runPythonDecoding(password, array) {
     let decodeResult = await decode.runDecoding(password, array);
     return decodeResult.decodedMessage;
 }

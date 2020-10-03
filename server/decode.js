@@ -1,4 +1,3 @@
-
 async function runDecoding(password, message) {
   
     console.log('Decoding message...');
@@ -15,7 +14,7 @@ async function runDecoding(password, message) {
 		python.stderr.on('data', handleError);
     });
     
-    return JSON.parse([result]);
+    return (JSON.parse([result]));
 }
 
 function confirmClosed(code) {
@@ -46,9 +45,7 @@ function runDecoding() {
 
 function decodeMessage(data) {
     console.log('Decoding message...');
-    let receivedInfo = [];
-    receivedInfo.push(data);
-    let result = JSON.parse(receivedInfo);
+    let result = JSON.parse([data]);
     console.log(result);
 }
 */
