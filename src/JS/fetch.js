@@ -21,6 +21,7 @@ async function sendUserInfo(password, message) {
 }
 
 async function sendEncryptedMessage(password, encodedMessage) {
+    //convert string to array before sending to the server
     let messageAsArray = convertMessageToUint8(encodedMessage);
 
     const address = 'http://localhost:4000/encryptedMessage';

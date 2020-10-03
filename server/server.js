@@ -35,6 +35,7 @@ async function encodeMessage(req, res) {
         let message = await runPythonEncoding(userInfo.password, userInfo.message);
         res.send(message);
         console.log('Encrypted message sent');
+
     } catch (error) {
         console.log(error);
     };
@@ -56,10 +57,19 @@ async function decodeMessage(req, res) {
     };
 }
 
+/* --------------------Interaction with python folder---------------------------*/
+
 async function runPythonEncoding(password, message) {
     let encryptionResult = await encode.runEncryption(password, message);
     return encryptionResult.encodedMessageAsUInt8;
 }
+
+async function runPythonDecoding(password, array) {
+    let decodeResult = await decode.runDecoding(password, array);
+    return decodeResult.decodedMessage;
+}
+
+/* --------------------------Password checking----------------------------------*/
 
 function checkPassword(userPassword) {
     if (userPassword === password) {
@@ -73,9 +83,4 @@ function checkPassword(userPassword) {
 function sendPasswordError(res) {
     console.error('Error: Password does not match')
     res.send(undefined);
-}
-
-async function runPythonDecoding(password, array) {
-    let decodeResult = await decode.runDecoding(password, array);
-    return decodeResult.decodedMessage;
 }

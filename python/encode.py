@@ -8,10 +8,11 @@ string = sys.argv[2]
 def encodeMessageAndConvertToUInt8(password, message):
     encodedMessage = SFE.encodeMessage(password, message)
     
+    # convert to a uint8Array representation for better handling (due to non ascii characters)
     encodedMessageAsBytes = bytes(encodedMessage, 'utf-8')
     encodedMessageAsUInt8 = list(encodedMessageAsBytes)
 
-    # convert an array of strings to an array of intergers
+    # convert an array of strings to an array of integers
     for i in range(0, len(encodedMessageAsUInt8)): 
         encodedMessageAsUInt8[i] = int(encodedMessageAsUInt8[i])
 
