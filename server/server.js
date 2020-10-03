@@ -1,10 +1,11 @@
 // declare a variable to store the password on the server
+
 let password = 'nick';
-let testMessage = [194, 165, 194, 175, 195, 130, 93, 195, 152, 194, 178, 195, 158, 195, 171, 194, 157, 194, 150, 194, 149, 194, 158, 195, 157, 195, 141, 194, 179, 195, 149, 194, 168, 194, 189, 194, 172, 195, 184, 194, 167, 195, 168, 194, 167, 194, 140, 195, 151, 195, 172, 194, 186, 195, 167, 194, 132];
 
 /* ----------------------Get required npm packages------------------------------*/
 
-const encode = require('./encode')
+const encode = require('./encode');
+const decode = require('./decode');
 const express = require("express");
 const cors = require("cors");
 
@@ -31,7 +32,7 @@ async function encodeMessage(req, res) {
         password = userInfo.password;
         console.log('User password saved');
 
-        let message = await runEncryption(userInfo.message);
+        let message = await runEncryption(userInfo.password, userInfo.message);
         res.send(message);
         console.log('Encrypted message sent');
     } catch (error) {
@@ -45,7 +46,7 @@ async function decodeMessage(req, res) {
         console.log('Received user info');
 
         if (checkPassword(userInfo.password)) {
-            let decodeResult = runDecoding(userInfo.messageAsArray);
+            let decodeResult = await decodeMessage(userInfo.password, userInfo.messageAsArray);
             res.send(decodeResult);
         } else {
             sendPasswordError(res);
@@ -55,8 +56,8 @@ async function decodeMessage(req, res) {
     };
 }
 
-async function runEncryption(message) {
-    let encryptionResult = await encode.runEncryption(message);
+async function runEncryption(password, message) {
+    let encryptionResult = await encode.runEncryption(password, message);
     return encryptionResult.encodedMessageAsUInt8;
 }
 
@@ -74,8 +75,8 @@ function sendPasswordError(res) {
     res.send(undefined);
 }
 
-function runDecoding(array) {
-    console.log(array);
-    let message = "A decoded message";
-    return message;
+
+async function decodeMessage(password, array) {
+    let decodeResult = await decode.runDecoding(password, array);
+    return decodeResult.decodedMessage;
 }
