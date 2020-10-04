@@ -23,6 +23,11 @@ function startDecode() {
 }
 
 async function checkSubmission(firstPasswordEntry, secondPasswordEntry, message) {
+	// check a message has been entered
+	if (!messageEntered(message)) {
+		alert('Please enter a message');
+		return;
+	}
 
 	// first check the password is valid
 	if (checkPassword(firstPasswordEntry, secondPasswordEntry)) {
@@ -49,7 +54,21 @@ function checkPassword(firstEntry, secondEntry) {
 	}
 }
 
+function messageEntered(message) {
+	if (message.length < 1) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
 async function sendEncodedMessage(password, message) {
+	//check a message has been entered
+	if (!messageEntered(message)) {
+		alert('Please enter a message');
+		return;
+	}
+
 	if (password.length > 3) {
 		// send the password & message to the server
 		let decodedMessage = await sendEncryptedMessage(password, message);
