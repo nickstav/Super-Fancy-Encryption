@@ -49,6 +49,7 @@ async function decodeMessage(req, res) {
         if (checkPassword(userInfo.password)) {
             let decodeResult = await runPythonDecoding(userInfo.password, userInfo.messageAsArray);
             res.send(decodeResult);
+            console.log('Decoded message sent');
         } else {
             sendPasswordError(res);
         } 
@@ -61,11 +62,13 @@ async function decodeMessage(req, res) {
 
 async function runPythonEncoding(password, message) {
     let encryptionResult = await encode.runEncryption(password, message);
+    console.log('Message encoded by SFE encryption');
     return encryptionResult.encodedMessageAsUInt8;
 }
 
 async function runPythonDecoding(password, array) {
     let decodeResult = await decode.runDecoding(password, array);
+    console.log('Message decoded by SFE encryption');
     return decodeResult.decodedMessage;
 }
 
