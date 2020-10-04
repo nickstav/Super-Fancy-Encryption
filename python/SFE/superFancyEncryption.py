@@ -16,7 +16,7 @@ X = "oh hello there you dapper dan"
 
 # PUBLIC API
 def encodeMessage(password, message): 
-    print("SFELOG.INFO: Decoding...")
+    print("SFELOG.INFO: Encoding...")
     try:
         return c(Y(password), message, 1)
     except:
