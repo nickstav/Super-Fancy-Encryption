@@ -23,14 +23,22 @@ function startDecode() {
 }
 
 async function checkSubmission(firstPasswordEntry, secondPasswordEntry, message) {
+
+	// first check the password is valid
 	if (checkPassword(firstPasswordEntry, secondPasswordEntry)) {
+
 		appStatus.saveUserInfo(firstPasswordEntry, message);
+
+		//send user data to the server and receive the encoded message as an array
 		let recievedArray = await sendUserInfo(firstPasswordEntry, message);
+
+		//convert the array into a string and display it on the app
 		let encryptedMessage = displayEncodedMessage(recievedArray);
 		appStatus.showEncryptedMessage(encryptedMessage);
 	}
 }
 
+// function to check two password entries are valid and match
 function checkPassword(firstEntry, secondEntry) {
 	if (firstEntry.length < 4 || secondEntry.length < 4) {
 		alert('Please enter a password of length 4-12 characters');
@@ -43,10 +51,13 @@ function checkPassword(firstEntry, secondEntry) {
 
 async function sendEncodedMessage(password, message) {
 	if (password.length > 3) {
+		// send the password & message to the server
 		let decodedMessage = await sendEncryptedMessage(password, message);
 		if (decodedMessage) {
+			//if response recieved, show the result
 			appStatus.showDecodedMessage(decodedMessage);
 		} else {
+			// if password does not match, "undefined" will be returned
 			alert('Error: Password does not match');
 		}
 	} else {
