@@ -76,8 +76,7 @@ async function sendEncodedMessage(password, message) {
 			//if response recieved, show the result
 			appStatus.showDecodedMessage(decodedMessage);
 		} else {
-			// if password does not match, "undefined" will be returned
-			alert('Error: Password does not match');
+			alert('Error: connection with server could not be established');
 		}
 	} else {
 		alert('Please enter a password of length 4-12 characters')

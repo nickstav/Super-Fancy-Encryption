@@ -46,13 +46,10 @@ async function decodeMessage(req, res) {
         const userInfo = req.body;
         console.log('Received user info');
 
-        if (checkPassword(userInfo.password)) {
-            let decodeResult = await runPythonDecoding(userInfo.password, userInfo.messageAsArray);
-            res.send(decodeResult);
-            console.log('Decoded message sent');
-        } else {
-            sendPasswordError(res);
-        } 
+        let decodeResult = await runPythonDecoding(userInfo.password, userInfo.messageAsArray);
+        res.send(decodeResult);
+        console.log('Decoded message sent');
+
     } catch (error) {
         console.log(error);
     };
@@ -70,20 +67,4 @@ async function runPythonDecoding(password, array) {
     let decodeResult = await decode.runDecoding(password, array);
     console.log('Message decoded by SFE encryption');
     return decodeResult.decodedMessage;
-}
-
-/* --------------------------Password checking----------------------------------*/
-
-function checkPassword(userPassword) {
-    if (userPassword === password) {
-        console.log('Password matches');
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function sendPasswordError(res) {
-    console.error('Error: Password does not match')
-    res.send(undefined);
 }
