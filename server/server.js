@@ -28,7 +28,7 @@ async function encodeMessage(req, res) {
         console.log('User Message received: ' + userInfo.message);
 
         password = userInfo.password;
-        console.log('User password saved');
+        console.log('User password received');
 
         //encode the message and send back the result
         let message = await runPythonEncoding(userInfo.password, userInfo.message);
