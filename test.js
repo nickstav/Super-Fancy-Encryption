@@ -1,3 +1,13 @@
+/*
+
+TODOS:
+
+1) make the Promise created in runPythonSFE wait until the python process has closed, before resolving/rejecting
+2) use the function passed as callback to python.stdout.on, record the data. Remember that all variables created inside runPythonSFE are available inside runPythonSFE.
+3) once the function has definitely closed, validate that the result is as expected, before parsing and returning
+
+*/
+
 //Main function that calls the python process, and returns the cleaned, processed output of encode.py
 async function main() {
     let test = await runPythonSFE('nick', 'oh hello you silly goose', 'python/encode.py')
