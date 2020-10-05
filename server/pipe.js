@@ -1,11 +1,11 @@
-async function runDecoding(password, message) {
-  
-    console.log('Decoding message...');
+async function runPythonSFE(password, message, filePath) {
+    
+    console.log('Piping data from Python script ...');
 
 	let result = await new Promise(resolve => {
         const { spawn } = require("child_process");
-		// spawn new child process to call the python script
-		const python = spawn('python3', ['../python/decode.py', password, message.toString()]);
+        // spawn new child process to call the python script using an absolute path
+		const python = spawn('python3', [filePath, password, message]);
 		// collect data from script
 		python.stdout.on('data', resolve);
 		// the 'close' event is emitted when the stdio streams of a child process have been closed. 
@@ -14,7 +14,7 @@ async function runDecoding(password, message) {
 		python.stderr.on('data', handleError);
     });
     
-    return (JSON.parse([result]));
+    return JSON.parse([result]);
 }
 
 function confirmClosed(code) {
@@ -33,19 +33,4 @@ function uint8arrayToString(data) {
     return String.fromCharCode.apply(null, data);
 };
 
-module.exports = { runDecoding }
-
-/*
-function runDecoding() {
-    const python = spawn('python3', ['../python/decode.py', password, message.toString()]);
-    python.stdout.on('data', (decodeMessage));
-    python.on('close', confirmClosed);
-    python.stderr.on('data', handleError);
-}
-
-function decodeMessage(data) {
-    console.log('Decoding message...');
-    let result = JSON.parse([data]);
-    console.log(result);
-}
-*/
+module.exports = { runPythonSFE }

@@ -1,13 +1,9 @@
-// declare a variable to store the password on the server
-
-let password = 'nick';
-
 /* ----------------------Get required npm packages------------------------------*/
 
-const encode = require('./encode');
-const decode = require('./decode');
+const pipe = require('./pipe');
 const express = require("express");
 const cors = require("cors");
+const path = require('path');
 
 /* -----------------------Set up server on a local port------------------------ */
 
@@ -24,14 +20,17 @@ app.post('/userInfo', encodeMessage);
 
 app.post('/encryptedMessage', decodeMessage);
 
+
 async function encodeMessage(req, res) {
     try {
+        // receive user message/password from the front end
         const userInfo = req.body;
         console.log('User Message received: ' + userInfo.message);
 
         password = userInfo.password;
         console.log('User password saved');
 
+        //encode the message and send back the result
         let message = await runPythonEncoding(userInfo.password, userInfo.message);
         res.send(message);
         console.log('Encrypted message sent');
@@ -43,9 +42,11 @@ async function encodeMessage(req, res) {
 
 async function decodeMessage(req, res) {
     try {
+        // recieve the encoded message from the front-end
         const userInfo = req.body;
         console.log('Received user info');
 
+        // decode the message and send back the result
         let decodeResult = await runPythonDecoding(userInfo.password, userInfo.messageAsArray);
         res.send(decodeResult);
         console.log('Decoded message sent');
@@ -58,13 +59,21 @@ async function decodeMessage(req, res) {
 /* --------------------Interaction with python folder---------------------------*/
 
 async function runPythonEncoding(password, message) {
-    let encryptionResult = await encode.runEncryption(password, message);
-    console.log('Message encoded by SFE encryption');
+    //define absolute path to encode python file
+    let encodePath = path.resolve(__dirname, "..", 'python', 'encode.py');
+
+    let encryptionResult = await pipe.runPythonSFE(password, message, encodePath);
+    console.log('Message encoded and received by SFE encryption');
+
     return encryptionResult.encodedMessageAsUInt8;
 }
 
 async function runPythonDecoding(password, array) {
-    let decodeResult = await decode.runDecoding(password, array);
-    console.log('Message decoded by SFE encryption');
+    // define absolute path to decode python file
+    let decodePath = path.resolve(__dirname, "..", 'python', 'decode.py');
+
+    let decodeResult = await pipe.runPythonSFE(password, array, decodePath);
+    console.log('Message decoded and received by SFE encryption');
+    
     return decodeResult.decodedMessage;
 }
