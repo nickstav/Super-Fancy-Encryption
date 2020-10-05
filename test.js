@@ -1,3 +1,10 @@
+testIt();
+
+async function testIt() {
+    let test = await runPythonSFE('nick', 'oh hello you silly goose', 'python/encode.py')
+    console.log(test);
+}
+
 async function runPythonSFE(password, message, filePath) {
     console.log('Piping data from Python script ...');
 
@@ -12,8 +19,13 @@ async function runPythonSFE(password, message, filePath) {
 		// catch errors
 		python.stderr.on('data', handleError);
     });
+    
+    // the above returns a buffer object which we convert to a string
+    let bufferAsString = result.toString();
+    //get the JSON section of string by searching for the opening bracket & taking the string from there
+    let returnedData = "{" + bufferAsString.split('{')[1];
 
-    return JSON.parse([result]);
+    return JSON.parse(returnedData);
 }
 
 function confirmClosed(code) {
@@ -31,5 +43,3 @@ function handleError(data) {
 function uint8arrayToString(data) {
     return String.fromCharCode.apply(null, data);
 };
-
-module.exports = { runPythonSFE }
