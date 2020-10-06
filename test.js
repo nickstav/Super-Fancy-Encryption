@@ -1,25 +1,9 @@
-/*
-
-TODOS:
-
-1) make the Promise created in runPythonSFE wait until the python process has closed, before resolving/rejecting
-2) use the function passed as callback to python.stdout.on, record the data. Remember that all variables created inside runPythonSFE are available inside runPythonSFE.
-3) once the function has definitely closed, validate that the result is as expected, before parsing and returning
-
-*/
-
-//Main function that calls the python process, and returns the cleaned, processed output of encode.py
-async function main() {
-    let test = await runPythonSFE('nick', 'oh hello you silly goose', 'python/encode.py')
-    console.log(JSON.parse(test));
-}
-
 //Function that creates the python process (passing in the script name + args), and adds pipes/onClose handling
 async function runPythonSFE(password, message, filePath) {
     const { spawn } = require("child_process");
     console.log('Piping data from Python script ...');
 
-    let result = [];
+    let result =[];
 
 	await new Promise((resolve, reject) => {
 
@@ -27,31 +11,40 @@ async function runPythonSFE(password, message, filePath) {
         const python = spawn('python3', [filePath, password, message]);
         
 		// collect data from script
-        python.stdout.on('data', (data)=>{collectData(data, result)});
+        python.stdout.on('data', (data)=>{
+            collectData(data, result)
+        });
         
 		// the 'close' event is emitted when the stdio streams of a child process have been closed. 
-        python.on('close', (code)=>{confirmClosed(code, resolve, reject)});
+        python.on('close', (code)=>{
+            confirmClosed(code, resolve, reject)
+        });
         
 		// catch errors
 		python.stderr.on('data', handleError);
     });
 
-    return result;
+    return JSON.parse(result);
 }
 
 function collectData(data, variableToStore) {
+    //collect all the output from python as a string
     let stream = data.toString();
+    // return the string to the variable declared in parent function
     variableToStore.push(filterData(stream));
 }
 
 function filterData(string) {
     /* \r\n for Windows, \r for Mac, \n for Linux , then ignoring empty lines */
     let lines = string.split(/\r\n|\r|\n/).filter(line => line !== ''); 
+    // remove SFE logs from the SFE python file to leave just the encoding request
     let codingOutput = lines.filter(line => !line.includes('SFELOG'));
     
     if (codingOutput.length === 1) {
+        //if we have removed all irrelevant data, there'll be only the desired JSON remaining
         return codingOutput[0];
     } else {
+        // if there is unexpected extra data, return "undefined" to throw an error
         return undefined;
     }
 }
@@ -77,5 +70,4 @@ function uint8arrayToString(data) {
     return String.fromCharCode.apply(null, data);
 };
 
-//Run the main function
-main();
+module.exports = { runPythonSFE }
