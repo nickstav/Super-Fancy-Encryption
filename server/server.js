@@ -63,9 +63,12 @@ async function runPythonEncoding(password, message) {
     let encodePath = path.resolve(__dirname, "..", 'python', 'encode.py');
 
     let encryptionResult = await pipe.runPythonSFE(password, message, encodePath);
-    console.log('Message encoded and received by SFE encryption');
-
-    return encryptionResult.encodedMessageAsUInt8;
+    if (encryptionResult) {
+        console.log('Message encoded and received by SFE encryption');
+        return encryptionResult.encodedMessageAsUInt8;
+    } else {
+        console.log("Error: No SFE data received");
+    }
 }
 
 async function runPythonDecoding(password, array) {
@@ -73,7 +76,11 @@ async function runPythonDecoding(password, array) {
     let decodePath = path.resolve(__dirname, "..", 'python', 'decode.py');
 
     let decodeResult = await pipe.runPythonSFE(password, array, decodePath);
-    console.log('Message decoded and received by SFE encryption');
+    if (decodeResult) {
+        console.log('Message decoded and received by SFE encryption');
+        return decodeResult.decodedMessage;
+    } else {
+        console.log("Error: No SFE data received");
+    }
     
-    return decodeResult.decodedMessage;
 }
