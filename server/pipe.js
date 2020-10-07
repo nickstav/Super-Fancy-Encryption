@@ -3,8 +3,10 @@ async function runPythonSFE(password, message, filePath) {
     const { spawn } = require("child_process");
     console.debug('Piping data from Python script ...');
 
+    // create an array in which to store gathered dataS
     let result =[];
 
+    // create a promise that will return the required data once the process has finished running
 	await new Promise((resolve, reject) => {
 
         // spawn new child process to call the python script using an absolute path
@@ -24,17 +26,18 @@ async function runPythonSFE(password, message, filePath) {
 		python.stderr.on('data', handleError);
     });
 
+    if (result)
     return JSON.parse(result);
 }
 
 function collectData(data, variableToStore) {
     //collect all the output from python as a string
-    let stream = data.toString();
+    let pythonOutputString = data.toString();
     // return the string to the variable declared in parent function
-    variableToStore.push(filterData(stream));
+    variableToStore.push(filterPythonString(pythonOutputString));
 }
 
-function filterData(string) {
+function filterPythonString(string) {
     /* \r\n for Windows, \r for Mac, \n for Linux , then ignoring empty lines */
     let lines = string.split(/\r\n|\r|\n/).filter(line => line !== ''); 
     // remove SFE logs from the SFE python file to leave just the encoding request
