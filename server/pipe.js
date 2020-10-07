@@ -79,3 +79,12 @@ function uint8arrayToString(data) {
 };
 
 module.exports = { runPythonSFE }
+
+
+/* 
+TODO - Currently "undefined" id being passed from filterPythonString to CollectData 
+to runPythonSFE (and then onto server.js) in case of unexpected data. This means that
+any error handling is happening further up the code than at the route cause. This is
+tracked via console.debugs and maybe removes the need for more complex error handling,
+but it may be an idea to replace it with a more flexible method at some point.
+*/
