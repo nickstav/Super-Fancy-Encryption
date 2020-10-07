@@ -1,10 +1,12 @@
 //Function that creates the python process (passing in the script name + args), and adds pipes/onClose handling
 async function runPythonSFE(password, message, filePath) {
     const { spawn } = require("child_process");
-    console.log('Piping data from Python script ...');
+    console.debug('Piping data from Python script ...');
 
+    // create an array in which to store gathered dataS
     let result =[];
 
+    // create a promise that will return the required data once the process has finished running
 	await new Promise((resolve, reject) => {
 
         // spawn new child process to call the python script using an absolute path
@@ -24,17 +26,23 @@ async function runPythonSFE(password, message, filePath) {
 		python.stderr.on('data', handleError);
     });
 
-    return JSON.parse(result);
+    if (result !== undefined) {
+        // if received, return the gathered python info as a JSON
+        return JSON.parse(result);
+    } else {
+        // the python result wasn't as expected, so return no data to the JS server file
+        return undefined;
+    }
 }
 
 function collectData(data, variableToStore) {
     //collect all the output from python as a string
-    let stream = data.toString();
+    let pythonOutputString = data.toString();
     // return the string to the variable declared in parent function
-    variableToStore.push(filterData(stream));
+    variableToStore.push(filterPythonString(pythonOutputString));
 }
 
-function filterData(string) {
+function filterPythonString(string) {
     /* \r\n for Windows, \r for Mac, \n for Linux , then ignoring empty lines */
     let lines = string.split(/\r\n|\r|\n/).filter(line => line !== ''); 
     // remove SFE logs from the SFE python file to leave just the encoding request
@@ -44,7 +52,7 @@ function filterData(string) {
         //if we have removed all irrelevant data, there'll be only the desired JSON remaining
         return codingOutput[0];
     } else {
-        // if there is unexpected extra data, return "undefined" to throw an error
+        // if there is unexpected extra data, return "undefined" to show no valid data can be retrieved
         return undefined;
     }
 }
@@ -52,10 +60,10 @@ function filterData(string) {
 //Function that runs when the python process is eventually closed
 function confirmClosed(code, resolve, reject) {
     if (code === 0) {
-        console.log(`Child process closed with code ${code}`);
+        console.debug(`Child process closed with code ${code}`);
         resolve();
     } else {
-        console.log(`Error: Process could not be completed (${code})`);
+        console.debug(`Error: Process could not be completed (${code})`);
         reject();
     }
 }
@@ -71,3 +79,12 @@ function uint8arrayToString(data) {
 };
 
 module.exports = { runPythonSFE }
+
+
+/* 
+TODO - Currently "undefined" id being passed from filterPythonString to CollectData 
+to runPythonSFE (and then onto server.js) in case of unexpected data. This means that
+any error handling is happening further up the code than at the route cause. This is
+tracked via console.debugs and maybe removes the need for more complex error handling,
+but it may be an idea to replace it with a more flexible method at some point.
+*/
