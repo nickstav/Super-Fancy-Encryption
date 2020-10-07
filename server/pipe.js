@@ -26,8 +26,13 @@ async function runPythonSFE(password, message, filePath) {
 		python.stderr.on('data', handleError);
     });
 
-    if (result)
-    return JSON.parse(result);
+    if (result !== undefined) {
+        // if received, return the gathered python info as a JSON
+        return JSON.parse(result);
+    } else {
+        // the python result wasn't as expected, so return no data to the JS server file
+        return undefined;
+    }
 }
 
 function collectData(data, variableToStore) {
@@ -47,7 +52,7 @@ function filterPythonString(string) {
         //if we have removed all irrelevant data, there'll be only the desired JSON remaining
         return codingOutput[0];
     } else {
-        // if there is unexpected extra data, return "undefined" to throw an error
+        // if there is unexpected extra data, return "undefined" to show no valid data can be retrieved
         return undefined;
     }
 }

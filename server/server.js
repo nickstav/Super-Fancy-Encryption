@@ -62,27 +62,42 @@ async function runPythonEncoding(password, message) {
     //define absolute path to encode python file
     let encodePath = path.resolve(__dirname, "..", 'python', 'encode.py');
 
-    let encryptionResult = await pipe.runPythonSFE(password, message, encodePath);
-    if (encryptionResult) {
-        console.debug('Message encoded and received by SFE encryption');
-        return encryptionResult.encodedMessageAsUInt8;
-    } else {
-        console.error("Error: No SFE data received");
+    try {
+        let encryptionResult = await pipe.runPythonSFE(password, message, encodePath);
+
+        if (encryptionResult) {
+            // if python info was recieved, return the relevant data
+            console.debug('Message encoded and received by SFE encryption');
+            return encryptionResult.encodedMessageAsUInt8;
+        } else {
+            // undefined will be returned if the python script did not return the expected data
+            console.error("Error: No SFE data received");
+        }
+
+    } catch (error) {
+        // catch any other type of error
+        console.error(error);
     }
 }
 
 async function runPythonDecoding(password, array) {
     // define absolute path to decode python file
     let decodePath = path.resolve(__dirname, "..", 'python', 'decode.py');
+
     try {
         let decodeResult = await pipe.runPythonSFE(password, array, decodePath);
+
         if (decodeResult !== undefined) {
+            // if python info was recieved, return the relevant data
             console.debug('Message decoded and received by SFE encryption');
             return decodeResult.decodedMessage;
         } else {
+            // undefined will be returned if the python script did not return the expected data
             console.error("Error: No SFE data received");
         }
+
     } catch (error) {
+        // catch any other type of error
         console.error(error);
     }
     
