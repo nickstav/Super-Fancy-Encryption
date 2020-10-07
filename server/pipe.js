@@ -1,7 +1,7 @@
 //Function that creates the python process (passing in the script name + args), and adds pipes/onClose handling
 async function runPythonSFE(password, message, filePath) {
     const { spawn } = require("child_process");
-    console.log('Piping data from Python script ...');
+    console.debug('Piping data from Python script ...');
 
     let result =[];
 
@@ -52,10 +52,10 @@ function filterData(string) {
 //Function that runs when the python process is eventually closed
 function confirmClosed(code, resolve, reject) {
     if (code === 0) {
-        console.log(`Child process closed with code ${code}`);
+        console.debug(`Child process closed with code ${code}`);
         resolve();
     } else {
-        console.log(`Error: Process could not be completed (${code})`);
+        console.debug(`Error: Process could not be completed (${code})`);
         reject();
     }
 }

@@ -25,15 +25,15 @@ async function encodeMessage(req, res) {
     try {
         // receive user message/password from the front end
         const userInfo = req.body;
-        console.log('User Message received: ' + userInfo.message);
+        console.debug('User Message received: ' + userInfo.message);
 
         password = userInfo.password;
-        console.log('User password received');
+        console.debug('User password received');
 
         //encode the message and send back the result
         let message = await runPythonEncoding(userInfo.password, userInfo.message);
         res.send(message);
-        console.log('Encrypted message sent');
+        console.debug('Encrypted message sent');
 
     } catch (error) {
         console.log(error);
@@ -44,15 +44,15 @@ async function decodeMessage(req, res) {
     try {
         // recieve the encoded message from the front-end
         const userInfo = req.body;
-        console.log('Received user info');
+        console.debug('Received user info');
 
         // decode the message and send back the result
         let decodeResult = await runPythonDecoding(userInfo.password, userInfo.messageAsArray);
         res.send(decodeResult);
-        console.log('Decoded message sent');
+        console.debug('Decoded message sent');
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
     };
 }
 
@@ -64,23 +64,26 @@ async function runPythonEncoding(password, message) {
 
     let encryptionResult = await pipe.runPythonSFE(password, message, encodePath);
     if (encryptionResult) {
-        console.log('Message encoded and received by SFE encryption');
+        console.debug('Message encoded and received by SFE encryption');
         return encryptionResult.encodedMessageAsUInt8;
     } else {
-        console.log("Error: No SFE data received");
+        console.error("Error: No SFE data received");
     }
 }
 
 async function runPythonDecoding(password, array) {
     // define absolute path to decode python file
     let decodePath = path.resolve(__dirname, "..", 'python', 'decode.py');
-
-    let decodeResult = await pipe.runPythonSFE(password, array, decodePath);
-    if (decodeResult) {
-        console.log('Message decoded and received by SFE encryption');
-        return decodeResult.decodedMessage;
-    } else {
-        console.log("Error: No SFE data received");
+    try {
+        let decodeResult = await pipe.runPythonSFE(password, array, decodePath);
+        if (decodeResult !== undefined) {
+            console.debug('Message decoded and received by SFE encryption');
+            return decodeResult.decodedMessage;
+        } else {
+            console.error("Error: No SFE data received");
+        }
+    } catch (error) {
+        console.error(error);
     }
     
 }
